@@ -26,6 +26,6 @@ public class Tarefas {
     }
 
     public void setStatus(boolean status) {
-        this.status = false;
+        this.status = status;
     }
 }

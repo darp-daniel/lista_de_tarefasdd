@@ -5,6 +5,7 @@
  */
 package listadetarefasdd;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -34,9 +35,11 @@ public class ListaDeTarefasDD {
                             System.out.print("Digite a senha: ");
                             senha = sc.nextLine();
                             Usuario u = new Usuario();
+                            ArrayList <Tarefas> ts = new ArrayList();
                             u.setEmail(email);
                             u.setSenha(senha);
                             DAO.addUsuario(u);
+                            u.setT(ts);
                             break;
                         case "2":
                             boolean achou = false;
@@ -44,15 +47,9 @@ public class ListaDeTarefasDD {
                             email = sc.nextLine();
                             System.out.print("Digite a senha: ");
                             senha = sc.nextLine();
-                            DAO.srcUEmail(email);
-                            for(int i = 0;i < DAO.us.size();i++){
-                                if(senha.equals(DAO.us.get(i).getSenha())){
-                                    DAO.usuarioLogin = DAO.us.get(i);
-                                    achou = true;
-                                    break;
-                                }
-                                }
-                            if(achou){
+                            Usuario temp = DAO.srcUEmail(email);
+                            if(temp != null && senha.equals(temp.senha)){
+                                DAO.usuarioLogin = temp;
                                 homePage();
                             }else{
                                 System.out.println("Usuario ou senha incorretos!!");
@@ -66,7 +63,7 @@ public class ListaDeTarefasDD {
     }
     public static void homePage(){
         Scanner sc = new Scanner(System.in);
-        String id;
+        int id;
         while(DAO.usuarioLogin != null){
             System.out.println("==Bem-vindo Usuário, escolha uma das opções abaixo==");
             System.out.println("[1]: Adicionar Tarefa");
@@ -83,32 +80,49 @@ public class ListaDeTarefasDD {
                     Tarefas t = new Tarefas();
                     t.setTitulo(titulo);
                     t.setStatus(status);
-                    Usuario.addTarefa(t);
+                    DAO.usuarioLogin.addTarefa(t);
                     break;
                 case "2":
-                    for(int i = 0;i < Usuario.ts.size();i++){
-                        System.out.println("Tarefa " + Usuario.ts.get((i+1)));
-                        System.out.println("\tTitulo: " + Usuario.ts.get(i).getTitulo());
-                        System.out.println("\tStatus: " + Usuario.ts.get(i).isStatus());
+                    for(int i = 0;i < DAO.usuarioLogin.getT().size();i++){
+                        System.out.println("Tarefa " + (i+1));
+                        System.out.println("\tTitulo: " + DAO.usuarioLogin.getT().get(i).getTitulo());
+                        System.out.println("\tStatus: " + DAO.usuarioLogin.getT().get(i).isStatus());
                     }
                     break;
                 case "3":
-                    for(int i = 0;i < Usuario.ts.size();i++){
-                        if(Usuario.ts.get(i).isStatus() == false){
-                        System.out.println("Tarefa " + Usuario.ts.get((i+1)));
-                        System.out.println("\tTitulo: " + Usuario.ts.get(i).getTitulo());
-                        System.out.println("\tStatus: " + Usuario.ts.get(i).isStatus());
+                    for(int i = 0;i < DAO.usuarioLogin.getT().size();i++){
+                        if(DAO.usuarioLogin.getT().get(i).isStatus() == false){
+                        System.out.println("Tarefa " + (i+1));
+                        System.out.println("\tTitulo: " + DAO.usuarioLogin.getT().get(i).getTitulo());
+                        System.out.println("\tStatus: " + DAO.usuarioLogin.getT().get(i).isStatus());
                     }
-                        System.out.print("Digite a Tarefa que você deseja finalizar: ");
-                        id = sc.nextLine();
-                        if(id.equals((i-1))){
-                            
+                    }
+                        System.out.print("Digite o ID da tarefa que você deseja finalizar: ");
+                        id = sc.nextInt();
+                        sc.nextLine();
+                        if((id-1) < DAO.usuarioLogin.getT().size()){
+                            DAO.usuarioLogin.endTarefa((id-1));
+                        }else{
+                            System.out.println("Tarefa não encontrada");
                         }
-                    }
-                    break;
+                        break;
                 case "4":
+                    for(int i = 0;i < DAO.usuarioLogin.getT().size();i++){
+                        System.out.println("Tarefa " + (i+1));
+                        System.out.println("\tTitulo: " + DAO.usuarioLogin.getT().get(i).getTitulo());
+                        System.out.println("\tStatus: " + DAO.usuarioLogin.getT().get(i).isStatus());
+                        }
+                    System.out.print("Digite o ID da tarefa que você deseja finalizar: ");
+                        id = sc.nextInt();
+                        sc.nextLine();
+                        if((id-1) < DAO.usuarioLogin.getT().size()){
+                            DAO.usuarioLogin.getT().remove((id-1));
+                        }else{
+                            System.out.println("Tarefa não encontrada");
+                        }
                     break;
                 case "5":
+                    DAO.usuarioLogin = null;
                     break;    
             }
         }

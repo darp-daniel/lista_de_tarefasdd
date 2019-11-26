@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Usuario {
     String email;
     String senha;
-    static ArrayList <Tarefas> ts = new ArrayList(); 
+    ArrayList <Tarefas> ts = new ArrayList(); 
 
     public String getEmail() {
         return email;
@@ -37,12 +37,12 @@ public class Usuario {
     }
 
     public void setT(ArrayList<Tarefas> ts) {
-        Usuario.ts = ts;
+        this.ts = ts;
     }
-    public static void addTarefa(Tarefas t){
+    public void addTarefa(Tarefas t){
         ts.add(t);
     }
-    public static void endTarefa(){
-        
+    public void endTarefa(int i){
+        ts.get(i).setStatus(true);
    }
 }
